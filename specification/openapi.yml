@@ -1,0 +1,58 @@
+openapi: 3.0.0
+
+info:
+  title: sakura-village rest api
+  version: 1.0.0
+
+paths:
+  /post:
+    get:
+      summary: ''
+      description: ''
+      operationId: ''
+      responses:
+        default:
+          description: '...'
+
+  '/post/{id}':
+    get:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+
+      summary: ''
+      description: ''
+      operationId: ''
+
+      responses:
+        default:
+          description: '...'
+
+  '/post/{id}/comment':
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+    get:
+      summary: ''
+      description: ''
+      operationId: sakura_village.api.comment.search
+
+      responses:
+        default:
+          description: '...'
+    post:
+      summary: ''
+      description: ''
+      operationId: sakura_village.api.comment.post
+
+      responses:
+        default:
+          description: '...'
