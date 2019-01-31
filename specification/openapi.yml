@@ -4,35 +4,274 @@ info:
   title: sakura-village rest api
   version: 1.0.0
 
+components:
+  schemas:
+    Tag:
+      description: 指示文章特征的标签
+      type: object
+      required:
+        - title
+        - id
+      properties:
+        title:
+          type: string
+          maxLength: 16
+          minLength: 1
+        id:
+          type: integer
+          format: int32
+
+    Article:
+      description: 文章，标题无样式，内容为 markdown 格式。
+      type: object
+      required:
+        - id
+        - title
+        - content
+        - brief
+        - tags
+      properties:
+        id:
+          type: integer
+          format: int32
+        title:
+          type: string
+          maxLength: 32
+        brief:
+          type: string
+          maxLength: 100
+        content:
+          type: string
+          maxLength: 50000
+        tags:
+          type: array
+          minLength: 1
+          maxLength: 10
+          items:
+            $ref: '#/components/schemas/Tag'
+        created_at:
+          description: 创建日期，ISO格式 datetime
+          type: string
+        updated_at:
+          description: 更新日期，ISO格式 datetime
+          type: string
+
+    ArticleBrief:
+      description: 文章简介信息，用于列出文章索引
+      type: object
+      required:
+        - id
+        - title
+        - brief
+        - tags
+      properties:
+        id:
+          type: integer
+          format: int32
+        title:
+          type: string
+          maxLength: 32
+        brief:
+          type: string
+          maxLength: 100
+        tags:
+          type: array
+          minLength: 1
+          maxLength: 10
+          items:
+            $ref: '#/components/schemas/Tag'
+        created_at:
+          description: 创建日期，ISO格式 datetime
+          type: string
+        updated_at:
+          description: 更新日期，ISO格式 datetime
+          type: string
+
+    ArticleIndex:
+      description: 文章索引，文章简介的列表，需要分页获取
+      type: object
+      required:
+        - total
+        - page
+        - size
+        - items
+      properties:
+        total:
+          type: integer
+          format: int32
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArticleBrief'
+
+    Post:
+      description: 讨论版的帖子
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        content:
+          type: string
+          maxLength: 5000
+          minLength: 1
+        created_at:
+          description: 创建日期，ISO格式 datetime
+          type: string
+        updated_at:
+          description: 更新日期，ISO格式 datetime
+          type: string
+
+    PostBrief:
+      description: 讨论版帖子的简介信息
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        brief:
+          type: string
+          maxLength: 100
+        created_at:
+          description: 创建日期，ISO格式 datetime
+          type: string
+        updated_at:
+          description: 更新日期，ISO格式 datetime
+          type: string
+
+    PostIndex:
+      description: 讨论版帖子索引
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int32
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostBrief'
+
+    Reply:
+      description: 讨论版帖子的回帖
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        content:
+          type: string
+          maxLength: 2000
+        reply_to:
+          type: integer
+          format: int32
+
+    ReplyIndex:
+      description: 讨论版帖子回帖的索引，分页查看回帖列表
+      type: object
+      required:
+        - total
+        - page
+        - size
+        - items
+      properties:
+        total:
+          type: integer
+          format: int32
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reply'
+
 paths:
+  /article:
+    get:
+      tags:
+        - article
+      description: ''
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleIndex'
+
+    post:
+      tags:
+        - article
+      summary: ''
+      description: ''
+      operationId: ''
+      responses:
+        201:
+          description: ''
+
+  /article/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: integer
+          format: int32
+
+    get:
+      tags:
+        - article
+      description: ''
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Article'
+
   /post:
     get:
+      tags:
+        - post
       summary: ''
       description: ''
       operationId: ''
       responses:
-        default:
-          description: '...'
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostIndex'
+
+    post:
+      tags:
+        - post
+      summary: ''
+      description: ''
+      operationId: ''
+      responses:
+        201:
+          description: ''
 
   '/post/{id}':
-    get:
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
-
-      summary: ''
-      description: ''
-      operationId: ''
-
-      responses:
-        default:
-          description: '...'
-
-  '/post/{id}/comment':
     parameters:
       - name: id
         in: path
@@ -40,19 +279,49 @@ paths:
         schema:
           type: integer
           format: int32
+
     get:
+      tags:
+        - post
       summary: ''
       description: ''
-      operationId: sakura_village.api.comment.search
-
       responses:
-        default:
-          description: '...'
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+
+  /post/{id}/reply:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+
+    get:
+      operationId: sakura_village.api.reply.search
+      tags:
+        - post
+      summary: ''
+      description: ''
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reply'
+
     post:
+      operationId: sakura_village.api.reply.post
+      tags:
+        - post
       summary: ''
       description: ''
-      operationId: sakura_village.api.comment.post
-
       responses:
-        default:
-          description: '...'
+        201:
+          description: ''
