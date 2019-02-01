@@ -4,3 +4,7 @@ def search(id):
 
 def post(id):
     pass
+
+
+def delete(id, comment_id):
+    pass

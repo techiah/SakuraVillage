@@ -1,10 +1,18 @@
-def search():
+def search(page: int, size: int):
     pass
 
 
-def get():
+def get(id: int):
     pass
 
 
 def post():
+    pass
+
+
+def patch():
+    pass
+
+
+def delete():
     pass
