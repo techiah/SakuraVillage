@@ -8,6 +8,7 @@ from connexion import FlaskApp, RestyResolver
 from flask import Flask, Blueprint
 
 from sakura_village.extensions import ADMIN, DB, MIGRATE
+from utils.cli import cli_discover
 
 base_dir = PurePath(__file__).parent
 specification_dir = PurePath(__file__).parent.joinpath('specification')
@@ -62,7 +63,7 @@ def create_app() -> connexion.FlaskApp:
 
     # setup extra flask blueprints
     for bp, prefix in discover_blueprint():
-        flask_app.register_blueprint(BP, url_prefix=prefix)
+        flask_app.register_blueprint(bp, url_prefix=prefix)
 
     #
     # factory end here
@@ -72,6 +73,7 @@ def create_app() -> connexion.FlaskApp:
 
 connexion_app: FlaskApp = create_app()
 app: Flask = connexion_app.app
+app.cli.add_command(cli_discover(DB))
 
 if __name__ == "__main__":
     connexion_app.run(port=5000)
